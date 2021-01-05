@@ -19,9 +19,12 @@ let template = {
   password: String,
   personalInfo: {
     age: () => [ Number, null ], // null -> can be nullable
-    favThing: () => [ String, Number, null ] // Check for multiple types
+    favAnimal: () => [ String, Number, null ] // Check for multiple types
   },
   // badges: () => [ Array, null ]
+}
+
+ensureObject(obj).matchesStructure(template) // returns given object if matches, false if not
 }
 
 ensureObject(obj).matchesStructure(template) // returns given object if matches, false if not

@@ -144,17 +144,17 @@ let obj = {
     age: 34,
     favAnimal: 'Panda'
   },
-  badges: [ 'yellow', 'red', 'orange' ]
+  // badges: [ 'yellow', 'red', 'orange' ]
 }
 
 let template = {
   username: String,
   password: String,
   personalInfo: {
-    age: [ Number, null ],
-    favAnimal: [ String, null ]
+    age: () => [ Number, null ], // null -> can be nullable
+    favAnimal: () => [ String, Number, null ] // Check for multiple types
   },
-  badges: () => [ Array, null ]
+  // badges: () => [ Array, null ]
 }
 
-ensureObject(obj).matchesStructure(template)
+ensureObject(obj).matchesStructure(template) // returns given object if matches, false if not
