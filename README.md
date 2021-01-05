@@ -75,4 +75,41 @@ let template = {
 ensureObject(socialData).matchesStructure(template)
 ```
 
+### And another even more practical example
+#### Just for the sake of this example, let's just pretend that type-checking.js is a module ..
+```javascript
+const axios = require('axios')
+const { ensureObject } = require('./type-checking.js')
+
+const user = {
+  id: Number,
+  name: String,
+  username: String,
+  email: String,
+  address: {
+    street: String,
+    suite: String,
+    city: String,
+    zipcode: String,
+    geo: {
+      lat: String,
+      lng: String
+    }
+  },
+  phone: String,
+  website: String,
+  company: {
+    name: String, 
+    catchPhrase: String,
+    bs: String
+  }
+}
+
+axios.get('https://jsonplaceholder.typicode.com/users/1')
+  .then(res => {
+    ensureObject(res.data).matchesStructure(user)
+  })
+```
+
+## 🟦 TODO: Support for direct array checking
 ## 🟥 More examples comming soon ...
