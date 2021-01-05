@@ -101,20 +101,26 @@ function ensureObject(obj) {
           matches = matches && !!ensureObject(propertyValue).matchesStructure(propertyType)
         } else if (_isArray(propertyValue)) {
           // Check if every item of array matches type or structure
-          if (propertyValue.length !== 1) {
+          if (propertyType.length !== 1) {
             throw 'Array template must have only one item to type of all other items'
           }
 
-          let type = propertyValue[0]
+          let type = propertyType[0]
 
           if (_isAnonymousFunction(type)) {
             throw 'Using callback functions to represent type of an item in array is not yet supported'
           }
 
           if (_isObject(type)) {
-
+            matches = matches && propertyValue.every(i => !!ensureObject(i).matchesStructure(type))
+            if (!matches) {
+              throw `Values in array '${property}' does not match the given structure`
+            }
           } else {
             matches = matches && propertyValue.every(i => _typeMatches(i, type))
+            if (!matches) {
+              throw `Values in array '${property}' does not match type '${type.name}'`
+            }
           }
         } else {
           // propertyType is function in this case
@@ -137,24 +143,65 @@ function ensureObject(obj) {
 }
 
 
-let obj = {
-  username: 'Adam',
-  password: 'heslo',
-  personalInfo: {
-    age: 34,
-    favAnimal: 'Panda'
-  },
-  // badges: [ 'yellow', 'red', 'orange' ]
+// let obj = {
+//   username: 'Adam',
+//   password: 'heslo',
+//   personalInfo: {
+//     age: 34,
+//     favAnimal: 'Panda'
+//   },
+//   // badges: [ 'yellow', 'red', 'orange' ]
+// }
+
+// let template = {
+//   username: String,
+//   password: String,
+//   personalInfo: {
+//     age: () => [ Number, null ], // null -> can be nullable
+//     favAnimal: () => [ String, Number, null ] // Check for multiple types
+//   },
+//   // badges: () => [ Array, null ]
+// }
+
+let socialData = {
+  users: [
+    {
+      name: 'Alice',
+      age: 23,
+      favColors: [ 'red', 'green', 'blue' ]
+    },
+    {
+      name: 'Bob',
+      age: 27,
+      favColors: [ 'red', 'cyan', 'black' ]
+    }
+  ],
+  posts: [
+    {
+      from: 'Alice',
+      text: 'I am alice'
+    },
+    {
+      from: 'Bob',
+      text: 'And I am Bob!'
+    }
+  ]
 }
 
 let template = {
-  username: String,
-  password: String,
-  personalInfo: {
-    age: () => [ Number, null ], // null -> can be nullable
-    favAnimal: () => [ String, Number, null ] // Check for multiple types
-  },
-  // badges: () => [ Array, null ]
+  users: [
+    {
+      name: String,
+      age: Number,
+      favColors: [ String ]
+    }
+  ],
+  posts: [
+    {
+      from: String,
+      text: () => [ String, null ]
+    }
+  ]
 }
 
-ensureObject(obj).matchesStructure(template) // returns given object if matches, false if not
+ensureObject(socialData).matchesStructure(template) // returns given object if matches, false if not
