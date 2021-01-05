@@ -11,7 +11,7 @@ let obj = {
     age: 34,
     favAnimal: 'Panda'
   },
-  // badges: [ 'yellow', 'red', 'orange' ]
+  badges: [ 'yellow', 'red', 'orange' ]
 }
 
 let template = {
@@ -21,15 +21,58 @@ let template = {
     age: () => [ Number, null ], // null -> can be nullable
     favAnimal: () => [ String, Number, null ] // Check for multiple types
   },
-  // badges: () => [ Array, null ]
-}
-
-ensureObject(obj).matchesStructure(template) // returns given object if matches, false if not
+  badges: [ String ]
 }
 
 ensureObject(obj).matchesStructure(template) // returns given object if matches, false if not
 ```
+### Another, more practical example
 
-## 🟥 Support for array comming soon
+```javascript
+// Actual data from backend
+let socialData = {
+  users: [
+    {
+      name: 'Alice',
+      age: 23,
+      favColors: [ 'red', 'green', 'blue' ]
+    },
+    {
+      name: 'Bob',
+      age: 27,
+      favColors: [ 'red', 'cyan', 'black' ]
+    }
+  ],
+  posts: [
+    {
+      from: 'Alice',
+      text: 'I am alice'
+    },
+    {
+      from: 'Bob',
+      text: 'And I am Bob!'
+    }
+  ]
+}
+
+// Define the template which should represent data comming from backend
+let template = {
+  users: [
+    {
+      name: String,
+      age: Number,
+      favColors: [ String ]
+    }
+  ],
+  posts: [
+    {
+      from: String,
+      text: () => [ String, null ]
+    }
+  ]
+}
+
+ensureObject(socialData).matchesStructure(template)
+```
 
 ## 🟥 More examples comming soon ...
